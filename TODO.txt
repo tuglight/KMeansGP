@@ -1,4 +1,4 @@
-Implement k-means
+*Implement k-means
 + Create Node Struct
 + Create Tree Class
 + Implement Tree Constructor
