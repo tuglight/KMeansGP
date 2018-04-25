@@ -10,6 +10,7 @@
 #include <random>
 #include <cmath>
 #include <limits>
+#include "gptree.h"
 
 const float MAX_FLOAT = std::numeric_limits<float>::max();
 
@@ -187,13 +188,18 @@ void kmeans(std::vector<Point> & dataPoints, int numFeatures, int k)
 
 int main()
 {
-	std::string testDataFile = "../data/iris.csv";
-	std::vector<Point> fileData;
-	int k = 3;
-	int numFeatures = 0;
+	// std::string testDataFile = "../data/iris.csv";
+	// std::vector<Point> fileData;
+	// int k = 3;
+	// int numFeatures = 0;
+	//
+	// getPointsFromFile(fileData, numFeatures, testDataFile);
+	// kmeans(fileData, numFeatures, k);
 
-	getPointsFromFile(fileData, numFeatures, testDataFile);
-	kmeans(fileData, numFeatures, k);
+	Tree myTree;
+	createTree(myTree, 13);
+	std::cout << myTree.nodes.size() << "\n";
+
 
 	return 0;
 }

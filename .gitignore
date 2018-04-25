@@ -1,8 +1,6 @@
 .vs
-a.exe
-a.out
-kmeans.exe
-kmeans.ilk
-kmeans.obj
-kmeans.pdb
-vc140.pdb
+*.out
+*.exe
+*.ilk
+*.obj
+*.pdb

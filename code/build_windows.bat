@@ -1,0 +1,1 @@
+cl -Zi /Fekmeansgp *.cpp
