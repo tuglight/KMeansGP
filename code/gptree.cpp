@@ -19,8 +19,8 @@ void createTree(Tree & initialTree, std::string fileName)
   dataFile.open(fileName.c_str());
 
   dataFile >> numNodes;
-
   initialTree.nodes.resize(numNodes);
+  dataFile >> initialTree.fitness;
 
   for (int i = 0; i < numNodes; i++)
   {

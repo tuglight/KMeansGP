@@ -168,12 +168,13 @@ bool equalCentroids(std::vector<Point> & oldClusters, std::vector<Point> & newCl
 	return isAllEqualCentroids;
 }
 
-void kmeans(std::vector<Point> & dataPoints, int numFeatures, int k)
+void kmeans(std::vector<Point> & dataPoints, int k)
 {
 	std::vector<int> currAssignments(dataPoints.size());
 	std::vector<Point> oldClusters(k);
 	std::vector<Point> newClusters(k);
 	newClusters = createKRandomPoints(dataPoints, k);
+	int numFeatures = dataPoints[0].row.size();
 	int counter = 0;
 	while(1)
 	{
@@ -202,7 +203,7 @@ int main()
 	{
 		reduceFeatures(myTree, fileData[i].row);
 	}
-	kmeans(fileData, 1, k);
+	kmeans(fileData, k);
 
 	return 0;
 }
