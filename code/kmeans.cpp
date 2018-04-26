@@ -188,18 +188,21 @@ void kmeans(std::vector<Point> & dataPoints, int numFeatures, int k)
 
 int main()
 {
-	// std::string testDataFile = "../data/iris.csv";
-	// std::vector<Point> fileData;
-	// int k = 3;
-	// int numFeatures = 0;
-	//
-	// getPointsFromFile(fileData, numFeatures, testDataFile);
-	// kmeans(fileData, numFeatures, k);
+	std::string testDataFile = "../data/iris.csv";
+	std::vector<Point> fileData;
+	int k = 3;
+	int numFeatures = 0;
+
+	getPointsFromFile(fileData, numFeatures, testDataFile);
 
 	Tree myTree;
-	createTree(myTree, 13);
-	std::cout << myTree.nodes.size() << "\n";
-
+	// createTree(myTree, 13);
+	createTree(myTree, "../results/test.txt");
+	for (int i = 0; i < fileData.size(); i++)
+	{
+		reduceFeatures(myTree, fileData[i].row);
+	}
+	kmeans(fileData, 1, k);
 
 	return 0;
 }

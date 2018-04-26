@@ -1,1 +1,1 @@
-cl -Zi /Fekmeansgp *.cpp
+cl /EHsc -Zi /Fekmeansgp *.cpp
