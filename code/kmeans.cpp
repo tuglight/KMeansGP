@@ -205,7 +205,10 @@ int main()
 	}
 	kmeans(fileData, k);
 	int depth = calculateTreeDepth(myTree);
-	cleanTree(myTree);
+	Tree newTree;
+	copyTree(newTree, myTree);
+	// cleanTree(myTree);
+	Tree babyTree = subtreeCrossover(newTree, myTree);
 
 	return 0;
 }

@@ -100,3 +100,76 @@ void cleanTree(Tree & parseTree)
   }
 
 }
+
+int chooseRandomNode(Tree & tree)
+{
+  int numTreeNodes = tree.nodes.size();
+  int numCurrRolls = 0;
+  int randVal;
+  do {
+    randVal = rand() % numTreeNodes;
+    numCurrRolls++;
+    if (tree.nodes[randVal].nodeType != 0)
+      break;
+  } while(numCurrRolls <= numTreeNodes);
+  return randVal;
+}
+
+void copyTree(Tree & lhsTree, Tree & rhsTree)
+{
+  lhsTree.nodes.resize(rhsTree.nodes.size());
+  for (int i = 0; i < lhsTree.nodes.size(); i++)
+    lhsTree.nodes[i] = rhsTree.nodes[i];
+  lhsTree.fitness = rhsTree.fitness;
+}
+
+void cleanBranch(int chosenNode, Tree & tree)
+{
+  if (chosenNode < tree.nodes.size())
+  {
+    tree.nodes[chosenNode].nodeType = 0;
+    tree.nodes[chosenNode].operatorType = 'N';
+    tree.nodes[chosenNode].featureIndex = -1;
+    tree.nodes[chosenNode].value = 0.0;
+    cleanBranch((2 * chosenNode) + 1, tree);
+    cleanBranch((2 * chosenNode) + 2, tree);
+  }
+}
+
+void recursiveSubtreeCrossover(int childNodeIndex, Tree & childTree, int parentNodeIndex, Tree & parentTree)
+{
+  if (parentNodeIndex >= parentTree.nodes.size() - 1)
+    return;
+  if (childNodeIndex >= childTree.nodes.size())
+  {
+    Node tempNode;
+    tempNode.nodeType = 0;
+    tempNode.operatorType = 'N';
+    tempNode.featureIndex = -1;
+    tempNode.value = 0.0;
+
+    int growDist = (childTree.nodes.size() - childNodeIndex) + 1;
+
+    for (int i = 0; i < growDist; i++)
+      childTree.nodes.push_back(tempNode);
+  }
+
+  childTree.nodes[childNodeIndex] = parentTree.nodes[parentNodeIndex];
+
+  recursiveSubtreeCrossover((2 * childNodeIndex) + 1, childTree, (2 * parentNodeIndex) + 1, parentTree);
+  recursiveSubtreeCrossover((2 * childNodeIndex) + 2, childTree, (2 * parentNodeIndex) + 2, parentTree);
+}
+
+Tree subtreeCrossover(Tree & tree1, Tree & tree2)
+{
+  int randTreeNode1 = chooseRandomNode(tree1);
+  int randTreeNode2 = chooseRandomNode(tree2);
+
+  Tree newTree;
+  copyTree(newTree, tree1);
+
+  cleanBranch(randTreeNode1, newTree);
+  recursiveSubtreeCrossover(randTreeNode1, newTree, randTreeNode2, tree2);
+
+  return newTree;
+}

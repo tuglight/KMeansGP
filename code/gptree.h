@@ -27,3 +27,8 @@ float calculateParseTree(int nodeIndex, Tree & parseTree, std::vector<float> & f
 float binaryOperators(float lhs, float rhs, char operatorType);
 int calculateTreeDepth(Tree & parseTree);
 void cleanTree(Tree & parseTree);
+int chooseRandomNode(Tree & tree);
+void copyTree(Tree & lhsTree, Tree & rhsTree);
+void cleanBranch(int chosenNode, Tree & tree);
+void recursiveSubtreeCrossover(int childNodeIndex, Tree & childTree, int parentNodeIndex, Tree & parentTree);
+Tree subtreeCrossover(Tree & tree1, Tree & tree2);
