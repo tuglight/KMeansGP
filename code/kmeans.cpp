@@ -204,6 +204,8 @@ int main()
 		reduceFeatures(myTree, fileData[i].row);
 	}
 	kmeans(fileData, k);
+	int depth = calculateTreeDepth(myTree);
+	cleanTree(myTree);
 
 	return 0;
 }

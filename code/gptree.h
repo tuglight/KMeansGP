@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cmath>
 
 struct Node
 {
@@ -24,3 +25,5 @@ void createTree(Tree & initialTree, std::string fileName);
 void reduceFeatures(Tree & parseTree, std::vector<float> & features);
 float calculateParseTree(int nodeIndex, Tree & parseTree, std::vector<float> & features);
 float binaryOperators(float lhs, float rhs, char operatorType);
+int calculateTreeDepth(Tree & parseTree);
+void cleanTree(Tree & parseTree);

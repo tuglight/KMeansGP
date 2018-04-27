@@ -80,3 +80,23 @@ float binaryOperators(float lhs, float rhs, char operatorType)
 
   return evalVal;
 }
+
+int calculateTreeDepth(Tree & parseTree)
+{
+  return (int)(std::ceil(log2(parseTree.nodes.size() + 1)) - 1);
+}
+
+void cleanTree(Tree & parseTree)
+{
+  int counter = parseTree.nodes.size();
+  while(counter > 0)
+  {
+    counter--;
+    if (parseTree.nodes[counter].nodeType == 1 || parseTree.nodes[counter].nodeType == 2)
+    {
+      parseTree.nodes.resize(counter + 1);
+      break;
+    }
+  }
+
+}
