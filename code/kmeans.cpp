@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <random>
 #include <cmath>
+#include <ctime>
 #include <limits>
 #include "gptree.h"
 
@@ -189,6 +190,7 @@ void kmeans(std::vector<Point> & dataPoints, int k)
 
 int main()
 {
+	srand(time(NULL));
 	std::string testDataFile = "../data/iris.csv";
 	std::vector<Point> fileData;
 	int k = 3;
@@ -199,16 +201,19 @@ int main()
 	Tree myTree;
 	// createTree(myTree, 13);
 	createTree(myTree, "../results/test.txt");
-	for (int i = 0; i < fileData.size(); i++)
-	{
-		reduceFeatures(myTree, fileData[i].row);
-	}
-	kmeans(fileData, k);
 	int depth = calculateTreeDepth(myTree);
 	Tree newTree;
 	copyTree(newTree, myTree);
-	// cleanTree(myTree);
 	Tree babyTree = subtreeCrossover(newTree, myTree);
+	Tree fatBabyTree = createFullTree(3, 4);
+	Tree fatBabyTree2 = createFullTree(3, 4);
+	Tree fatBabyTree3 = subtreeCrossover(fatBabyTree, fatBabyTree2);
+	for (int i = 0; i < fileData.size(); i++)
+	{
+		reduceFeatures(fatBabyTree3, fileData[i].row);
+	}
+	kmeans(fileData, k);
+
 
 	return 0;
 }

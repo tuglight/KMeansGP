@@ -86,6 +86,11 @@ int calculateTreeDepth(Tree & parseTree)
   return (int)(std::ceil(log2(parseTree.nodes.size() + 1)) - 1);
 }
 
+int calculateNodeDepth(int nodeNumber)
+{
+  return (int)(std::ceil(log2(nodeNumber + 1)) - 1);
+}
+
 void cleanTree(Tree & parseTree)
 {
   int counter = parseTree.nodes.size();
@@ -138,7 +143,7 @@ void cleanBranch(int chosenNode, Tree & tree)
 
 void recursiveSubtreeCrossover(int childNodeIndex, Tree & childTree, int parentNodeIndex, Tree & parentTree)
 {
-  if (parentNodeIndex >= parentTree.nodes.size() - 1)
+  if (parentNodeIndex >= parentTree.nodes.size())
     return;
   if (childNodeIndex >= childTree.nodes.size())
   {
@@ -148,7 +153,7 @@ void recursiveSubtreeCrossover(int childNodeIndex, Tree & childTree, int parentN
     tempNode.featureIndex = -1;
     tempNode.value = 0.0;
 
-    int growDist = (childTree.nodes.size() - childNodeIndex) + 1;
+    int growDist = (childNodeIndex - childTree.nodes.size()) + 1;
 
     for (int i = 0; i < growDist; i++)
       childTree.nodes.push_back(tempNode);
@@ -170,6 +175,74 @@ Tree subtreeCrossover(Tree & tree1, Tree & tree2)
 
   cleanBranch(randTreeNode1, newTree);
   recursiveSubtreeCrossover(randTreeNode1, newTree, randTreeNode2, tree2);
+  cleanTree(newTree);
+
+  return newTree;
+}
+
+Tree createFullTree(int treeDepth, int numFeatures)
+{
+  int numNodes = std::pow(2, treeDepth + 1) - 1;
+  Tree newTree;
+  newTree.fitness = 0.0;
+  Node tempNode;
+  tempNode.nodeType = 0;
+  tempNode.operatorType = 'N';
+  tempNode.featureIndex = -1;
+  tempNode.value = 0.0;
+  newTree.nodes.resize(numNodes, tempNode);
+
+
+  Node terminalNode;
+  terminalNode.nodeType = 1;
+  terminalNode.operatorType = 'N';
+  terminalNode.featureIndex = -1;
+  terminalNode.value = 0.0;
+
+  Node functionNode;
+  functionNode.nodeType = 2;
+  functionNode.operatorType = 'N';
+  functionNode.featureIndex = -1;
+  functionNode.value = 0.0;
+
+  Node randomNode;
+  randomNode.nodeType = 1;
+  randomNode.operatorType = 'N';
+  randomNode.featureIndex = -1;
+  randomNode.value = 0.0;
+
+
+  std::vector<char> functions = {'+', '-', '*', '/'};
+  int randVal;
+  float floatRandVal;
+
+  for (int i = 0; i < numNodes; i++)
+  {
+
+    if (calculateNodeDepth(i + 1) < treeDepth)
+    {
+      std::cout << i << "\n";
+      randVal = rand() % functions.size();
+      functionNode.operatorType = functions[randVal];
+      newTree.nodes[i] = functionNode;
+    }
+    else
+    {
+      randVal = rand() % (numFeatures + 1);
+      // The non-random terminals case
+      if (randVal < numFeatures)
+      {
+        terminalNode.featureIndex = randVal;
+        newTree.nodes[i] = terminalNode;
+      }
+      else
+      {
+        floatRandVal = (float) rand() / RAND_MAX;
+        randomNode.value = floatRandVal;
+        newTree.nodes[i] = randomNode;
+      }
+    }
+  }
 
   return newTree;
 }
