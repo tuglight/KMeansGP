@@ -246,3 +246,105 @@ Tree createFullTree(int treeDepth, int numFeatures)
 
   return newTree;
 }
+
+Tree createGrowTree(int treeDepth, int numFeatures)
+{
+  int numNodes = std::pow(2, treeDepth + 1) - 1;
+  Tree newTree;
+  newTree.fitness = 0.0;
+  Node tempNode;
+  tempNode.nodeType = 0;
+  tempNode.operatorType = 'N';
+  tempNode.featureIndex = -1;
+  tempNode.value = 0.0;
+  newTree.nodes.resize(numNodes, tempNode);
+  std::vector<bool> availableNodes(numNodes, true);
+
+  Node terminalNode;
+  terminalNode.nodeType = 1;
+  terminalNode.operatorType = 'N';
+  terminalNode.featureIndex = -1;
+  terminalNode.value = 0.0;
+
+  Node functionNode;
+  functionNode.nodeType = 2;
+  functionNode.operatorType = 'N';
+  functionNode.featureIndex = -1;
+  functionNode.value = 0.0;
+
+  Node randomNode;
+  randomNode.nodeType = 1;
+  randomNode.operatorType = 'N';
+  randomNode.featureIndex = -1;
+  randomNode.value = 0.0;
+
+
+  std::vector<char> functions = {'+', '-', '*', '/'};
+  int randVal;
+  float floatRandVal;
+
+  for (int i = 0; i < numNodes; i++)
+  {
+    if (availableNodes[i] == true)
+    {
+      if (calculateNodeDepth(i + 1) < treeDepth)
+      {
+        randVal = rand() % 2;
+        if (randVal == 0)
+        {
+          randVal = rand() % functions.size();
+          functionNode.operatorType = functions[randVal];
+          newTree.nodes[i] = functionNode;
+        }
+        else
+        {
+          randVal = rand() % (numFeatures + 1);
+          // The non-random terminals case
+          if (randVal < numFeatures)
+          {
+            terminalNode.featureIndex = randVal;
+            newTree.nodes[i] = terminalNode;
+          }
+          else
+          {
+            floatRandVal = (float) rand() / RAND_MAX;
+            randomNode.value = floatRandVal;
+            newTree.nodes[i] = randomNode;
+          }
+          markUnavailableNodes(i, numNodes, availableNodes);
+        }
+      }
+      else
+      {
+        randVal = rand() % (numFeatures + 1);
+        // The non-random terminals case
+        if (randVal < numFeatures)
+        {
+          terminalNode.featureIndex = randVal;
+          newTree.nodes[i] = terminalNode;
+        }
+        else
+        {
+          floatRandVal = (float) rand() / RAND_MAX;
+          randomNode.value = floatRandVal;
+          newTree.nodes[i] = randomNode;
+        }
+        markUnavailableNodes(i, numNodes, availableNodes);
+      }
+    }
+  }
+  cleanTree(newTree);
+
+  return newTree;
+}
+
+void markUnavailableNodes(int treeIndex, int numNodes, std::vector<bool> & availableNodes)
+{
+  if (treeIndex >= numNodes)
+    return;
+
+  availableNodes[treeIndex] = false;
+
+  markUnavailableNodes((2 * treeIndex) + 1, numNodes, availableNodes);
+  markUnavailableNodes((2 * treeIndex) + 2, numNodes, availableNodes);
+}

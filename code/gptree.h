@@ -34,3 +34,5 @@ void cleanBranch(int chosenNode, Tree & tree);
 void recursiveSubtreeCrossover(int childNodeIndex, Tree & childTree, int parentNodeIndex, Tree & parentTree);
 Tree subtreeCrossover(Tree & tree1, Tree & tree2);
 Tree createFullTree(int treeDepth, int numFeatures);
+Tree createGrowTree(int treeDepth, int numFeatures);
+void markUnavailableNodes(int treeIndex, int numNodes, std::vector<bool> & availableNodes);
