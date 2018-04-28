@@ -191,9 +191,9 @@ void kmeans(std::vector<Point> & dataPoints, int k)
 int main()
 {
 	srand(time(NULL));
-	std::string testDataFile = "../data/iris.csv";
+	std::string testDataFile = "../data/isolettraining.csv";
 	std::vector<Point> fileData;
-	int k = 3;
+	int k = 26;
 	int numFeatures = 0;
 
 	getPointsFromFile(fileData, numFeatures, testDataFile);
@@ -205,17 +205,17 @@ int main()
 	Tree newTree;
 	copyTree(newTree, myTree);
 	Tree babyTree = subtreeCrossover(newTree, myTree);
-	Tree fatBabyTree = createFullTree(3, 4);
-	Tree fatBabyTree2 = createFullTree(3, 4);
+	Tree fatBabyTree = createFullTree(3, 150);
+	Tree fatBabyTree2 = createFullTree(3, 150);
 	Tree fatBabyTree3 = subtreeCrossover(fatBabyTree, fatBabyTree2);
-	Tree unbalancedBaby = createGrowTree(3, 4);
-	Tree unbalancedBaby2 = createGrowTree(3, 4);
+	Tree unbalancedBaby = createGrowTree(3, 150);
+	Tree unbalancedBaby2 = createGrowTree(3, 150);
 	Tree unbalancedBaby3 = subtreeCrossover(unbalancedBaby, unbalancedBaby2);
 
-	for (int i = 0; i < fileData.size(); i++)
-	{
-		reduceFeatures(fatBabyTree3, fileData[i].row);
-	}
+	// for (int i = 0; i < fileData.size(); i++)
+	// {
+	// 	reduceFeatures(fatBabyTree3, fileData[i].row);
+	// }
 	kmeans(fileData, k);
 
 
