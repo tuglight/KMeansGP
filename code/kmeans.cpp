@@ -60,6 +60,8 @@ std::vector<Point> createKRandomPoints(std::vector<Point> & dataPoints, int k)
 {
 	std::random_device rd;
 	std::default_random_engine defRanEng{rd()};
+	std::cout << rd() << "\n";
+	std::cout << rd() << "\n";
 	std::shuffle(dataPoints.begin(), dataPoints.end(), defRanEng);
 	std::vector<Point> selectedPoints(k);
 
@@ -191,7 +193,7 @@ void kmeans(std::vector<Point> & dataPoints, int k)
 int main()
 {
 	srand(time(NULL));
-	std::string testDataFile = "../data/isolettraining.csv";
+	std::string testDataFile = "../data/isolettraining3.csv";
 	std::vector<Point> fileData;
 	int k = 26;
 	int numFeatures = 0;
