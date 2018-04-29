@@ -11,6 +11,7 @@
 #include <cmath>
 #include <ctime>
 #include <limits>
+#include <chrono>
 #include "gptree.h"
 
 const float MAX_FLOAT = std::numeric_limits<float>::max();
@@ -193,9 +194,9 @@ void kmeans(std::vector<Point> & dataPoints, int k)
 int main()
 {
 	srand(time(NULL));
-	std::string testDataFile = "../data/isolettraining3.csv";
+	std::string testDataFile = "../data/wine.csv";
 	std::vector<Point> fileData;
-	int k = 26;
+	int k = 3;
 	int numFeatures = 0;
 
 	getPointsFromFile(fileData, numFeatures, testDataFile);
@@ -207,18 +208,23 @@ int main()
 	Tree newTree;
 	copyTree(newTree, myTree);
 	Tree babyTree = subtreeCrossover(newTree, myTree);
-	Tree fatBabyTree = createFullTree(3, 150);
-	Tree fatBabyTree2 = createFullTree(3, 150);
+	Tree fatBabyTree = createFullTree(3, 13);
+	Tree fatBabyTree2 = createFullTree(3, 13);
 	Tree fatBabyTree3 = subtreeCrossover(fatBabyTree, fatBabyTree2);
-	Tree unbalancedBaby = createGrowTree(3, 150);
-	Tree unbalancedBaby2 = createGrowTree(3, 150);
+	Tree unbalancedBaby = createGrowTree(3, 13);
+	Tree unbalancedBaby2 = createGrowTree(3, 13);
 	Tree unbalancedBaby3 = subtreeCrossover(unbalancedBaby, unbalancedBaby2);
 
-	// for (int i = 0; i < fileData.size(); i++)
-	// {
-	// 	reduceFeatures(fatBabyTree3, fileData[i].row);
-	// }
+	for (int i = 0; i < fileData.size(); i++)
+	{
+		reduceFeatures(fatBabyTree3, fileData[i].row);
+	}
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 	kmeans(fileData, k);
+	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+	std::cout << "It took me " << time_span.count() << " seconds.";
+
 
 
 	return 0;
