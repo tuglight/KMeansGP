@@ -1,1 +1,1 @@
-g++ -std=c++11 -o kmeansgp *.cpp
+g++ -O3 -std=c++11 -o kmeansgp *.cpp

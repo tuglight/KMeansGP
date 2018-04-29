@@ -194,7 +194,7 @@ void kmeans(std::vector<Point> & dataPoints, int k)
 int main()
 {
 	srand(time(NULL));
-	std::string testDataFile = "../data/wine.csv";
+	std::string testDataFile = "../data/isolettraining.csv";
 	std::vector<Point> fileData;
 	int k = 3;
 	int numFeatures = 0;
@@ -215,10 +215,10 @@ int main()
 	Tree unbalancedBaby2 = createGrowTree(3, numFeatures);
 	Tree unbalancedBaby3 = subtreeCrossover(unbalancedBaby, unbalancedBaby2);
 
-	for (int i = 0; i < fileData.size(); i++)
-	{
-		reduceFeatures(fatBabyTree3, fileData[i].row);
-	}
+	// for (int i = 0; i < fileData.size(); i++)
+	// {
+	// 	reduceFeatures(fatBabyTree3, fileData[i].row);
+	// }
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 	kmeans(fileData, k);
 	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
