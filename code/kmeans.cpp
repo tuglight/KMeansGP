@@ -208,11 +208,11 @@ int main()
 	Tree newTree;
 	copyTree(newTree, myTree);
 	Tree babyTree = subtreeCrossover(newTree, myTree);
-	Tree fatBabyTree = createFullTree(3, 13);
-	Tree fatBabyTree2 = createFullTree(3, 13);
+	Tree fatBabyTree = createFullTree(3, numFeatures);
+	Tree fatBabyTree2 = createFullTree(3, numFeatures);
 	Tree fatBabyTree3 = subtreeCrossover(fatBabyTree, fatBabyTree2);
-	Tree unbalancedBaby = createGrowTree(3, 13);
-	Tree unbalancedBaby2 = createGrowTree(3, 13);
+	Tree unbalancedBaby = createGrowTree(3, numFeatures);
+	Tree unbalancedBaby2 = createGrowTree(3, numFeatures);
 	Tree unbalancedBaby3 = subtreeCrossover(unbalancedBaby, unbalancedBaby2);
 
 	for (int i = 0; i < fileData.size(); i++)
