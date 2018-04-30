@@ -4,5 +4,5 @@ training_dataset ../data/iristraining.csv
 testing_set ../data/iristesting.csv
 population_size 100
 generation_size 50
-parsimony_coefficient 0.01
+parsimony_coefficient 0.001
 number_of_evaluations 5000

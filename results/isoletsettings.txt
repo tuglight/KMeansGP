@@ -1,0 +1,8 @@
+k 26
+number_of_features 617
+training_dataset ../data/isolettraining.csv
+testing_set ../data/isolettesting.csv
+population_size 100
+generation_size 50
+parsimony_coefficient 0.001
+number_of_evaluations 500

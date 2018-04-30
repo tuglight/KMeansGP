@@ -36,7 +36,7 @@ struct Settings
 
 std::string getSettingsLine(std::ifstream & settingsIfStream);
 Settings getSettings(std::string settingsFile);
-void getPointsFromFile(std::vector<Point> & fileData, int & numFeatures, std::string file);
+void getPointsFromFile(std::vector<Point> & fileData, int numFeatures, std::string file);
 std::vector<Point> createKRandomPoints(std::vector<Point> & dataPoints, int k);
 float calculateEuclideanDistance(Point clusterCentroid, Point dataPoint);
 int getBestPointAssignment(Point dataPoint, std::vector<Point> & clusters, int k);
@@ -47,19 +47,24 @@ std::vector<std::string> getLabels(std::vector<Point> & dataPoints);
 float computePurity(std::vector<Point> & dataPoints, std::vector<std::string> & labels, std::vector<int> & assignments, int k);
 float kmeans(std::vector<Point> & dataPoints, int k);
 void runEA(Settings settingsInfo);
+void evaluateGroup(std::vector<Tree> & group, std::vector<Point> & fileData, int k, float parsimonyCoefficient, int & runEvals, int totalEvals);
+bool compTrees(Tree tree1, Tree tree2);
 void initializePopulation(std::vector<Tree> & population, int populationSize, int numFeatures);
+Tree rouletteWheelSelection(std::vector<Tree> & population);
+std::vector<Tree> createChildren(std::vector<Tree> & population, int generationSize);
+void addChildrenToPopulation(std::vector<Tree> & children, std::vector<Tree> & population);
 
 int main()
 {
 	srand(time(NULL));
 	std::string testDataFile = "../data/iristraining.csv";
-	std::string settingsFile = "../results/irissettings.txt";
+	std::string settingsFile = "../results/isoletsettings.txt";
 	Settings eaSettings = getSettings(settingsFile);
 	runEA(eaSettings);
 	std::vector<Point> fileData;
 	int k = 3;
 	int numFeatures = 0;
-	getPointsFromFile(fileData, numFeatures, testDataFile);
+	// getPointsFromFile(fileData, numFeatures, testDataFile);
 
 	Tree myTree;
 	// createTree(myTree, 13);
@@ -116,7 +121,7 @@ Settings getSettings(std::string settingsFile)
 	return settingsInfo;
 }
 
-void getPointsFromFile(std::vector<Point> & fileData, int & numFeatures, std::string file)
+void getPointsFromFile(std::vector<Point> & fileData, int numFeatures, std::string file)
 {
 	std::ifstream dataFile;
 	std::string dummyString;
@@ -369,13 +374,31 @@ void runEA(Settings settingsInfo)
 	int runEvals = 0;
 	std::vector<Tree> population(0);
 	initializePopulation(population, settingsInfo.populationSize, settingsInfo.numFeatures);
-	for (int i = 0; i < population.size(); i++)
+	evaluateGroup(population, fileData, settingsInfo.k, settingsInfo.parsimonyCoefficient, runEvals, settingsInfo.numberEvaluations);
+	do {
+		std::vector<Tree> children = createChildren(population, settingsInfo.generationSize);
+		evaluateGroup(children, fileData, settingsInfo.k, settingsInfo.parsimonyCoefficient, runEvals, settingsInfo.numberEvaluations);
+		addChildrenToPopulation(children, population);
+		std::sort(population.begin(), population.end(), compTrees);
+		population.resize(settingsInfo.populationSize);
+	} while(runEvals < settingsInfo.numberEvaluations);
+	std::cout << "EA finished!\n";
+}
+
+void evaluateGroup(std::vector<Tree> & group, std::vector<Point> & fileData, int k, float parsimonyCoefficient, int & runEvals, int totalEvals)
+{
+	for (int i = 0; i < group.size(); i++)
 	{
 		std::vector<Point> copyOfFileData = fileData;
-		evaluateIndividual(copyOfFileData, population[i], settingsInfo.k, settingsInfo.parsimonyCoefficient);
+		evaluateIndividual(copyOfFileData, group[i], k, parsimonyCoefficient);
 		runEvals++;
-		std::cout << runEvals << " out of " << settingsInfo.numberEvaluations << " completed!\n";
+		std::cout << runEvals << " out of " << totalEvals << " completed!\n";
 	}
+}
+
+bool compTrees(Tree tree1, Tree tree2)
+{
+	return (tree1.fitness > tree2.fitness);
 }
 
 void initializePopulation(std::vector<Tree> & population, int populationSize, int numFeatures)
@@ -390,4 +413,49 @@ void initializePopulation(std::vector<Tree> & population, int populationSize, in
 		else
 			population.push_back(createGrowTree(3, numFeatures));
 	}
+}
+
+Tree rouletteWheelSelection(std::vector<Tree> & population)
+{
+	float totalFitness = 0.0;
+	float randVal;
+
+	for (int i = 0; i < population.size(); i++)
+	{
+		totalFitness += population[i].fitness;
+	}
+	randVal = (rand() / RAND_MAX) * totalFitness;
+
+	totalFitness = 0.0;
+
+	int currPopMem = 0;
+
+	while (totalFitness < randVal)
+	{
+		totalFitness += population[currPopMem].fitness;
+		if (totalFitness < randVal)
+			currPopMem++;
+	}
+
+	return population[currPopMem];
+}
+
+std::vector<Tree> createChildren(std::vector<Tree> & population, int generationSize)
+{
+	std::vector<Tree> children(0);
+	for (int i = 0; i < generationSize; i++)
+	{
+		// Parent selection
+		Tree parent1 = rouletteWheelSelection(population);
+		Tree parent2 = rouletteWheelSelection(population);
+		children.push_back(subtreeCrossover(parent1, parent2));
+	}
+
+	return children;
+}
+
+void addChildrenToPopulation(std::vector<Tree> & children, std::vector<Tree> & population)
+{
+	for (int i = 0; i < children.size(); i++)
+		population.push_back(children[i]);
 }
