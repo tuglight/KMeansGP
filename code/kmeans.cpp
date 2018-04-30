@@ -22,6 +22,42 @@ struct Point
 	std::vector<float> row;
 };
 
+struct Settings
+{
+	int k;
+	std::string trainingDataset;
+	std::string testingDataset;
+	int populationSize;
+	int generationSize;
+	float parsimonyCoefficient;
+	int numberEvaluations;
+};
+
+std::string getSettingsLine(std::ifstream & settingsIfStream)
+{
+	std::string dummyString;
+	settingsIfStream >> dummyString;
+	settingsIfStream >> dummyString;
+	return dummyString;
+}
+
+Settings getSettings(std::string settingsFile)
+{
+	Settings settingsInfo;
+	std::ifstream settingsIfStream;
+	settingsIfStream.open(settingsFile.c_str());
+
+	settingsInfo.k = std::stoi(getSettingsLine(settingsIfStream));
+	settingsInfo.trainingDataset = getSettingsLine(settingsIfStream);
+	settingsInfo.testingDataset = getSettingsLine(settingsIfStream);
+	settingsInfo.populationSize = std::stoi(getSettingsLine(settingsIfStream));
+	settingsInfo.generationSize = std::stoi(getSettingsLine(settingsIfStream));
+	settingsInfo.parsimonyCoefficient = std::stof(getSettingsLine(settingsIfStream));
+	settingsInfo.numberEvaluations = std::stoi(getSettingsLine(settingsIfStream));
+
+	return settingsInfo;
+}
+
 void getPointsFromFile(std::vector<Point> & fileData, int & numFeatures, std::string file)
 {
 	std::ifstream dataFile;
@@ -195,10 +231,11 @@ int main()
 {
 	srand(time(NULL));
 	std::string testDataFile = "../data/isolettraining.csv";
+	std::string settingsFile = "../results/irissettings.txt";
 	std::vector<Point> fileData;
 	int k = 3;
 	int numFeatures = 0;
-
+	Settings eaSettings = getSettings(settingsFile);
 	getPointsFromFile(fileData, numFeatures, testDataFile);
 
 	Tree myTree;
