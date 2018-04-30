@@ -45,7 +45,7 @@ std::vector<Point> recomputeCentroids(std::vector<int> currAssignments, std::vec
 bool equalCentroids(std::vector<Point> & oldClusters, std::vector<Point> & newClusters, int numFeatures);
 std::vector<std::string> getLabels(std::vector<Point> & dataPoints);
 float computePurity(std::vector<Point> & dataPoints, std::vector<std::string> & labels, std::vector<int> & assignments, int k);
-void kmeans(std::vector<Point> & dataPoints, int k);
+float kmeans(std::vector<Point> & dataPoints, int k);
 void runEA(Settings settingsInfo);
 void initializePopulation(std::vector<Tree> & population, int populationSize, int numFeatures);
 
@@ -155,8 +155,6 @@ std::vector<Point> createKRandomPoints(std::vector<Point> & dataPoints, int k)
 {
 	std::random_device rd;
 	std::default_random_engine defRanEng{rd()};
-	std::cout << rd() << "\n";
-	std::cout << rd() << "\n";
 	std::shuffle(dataPoints.begin(), dataPoints.end(), defRanEng);
 	std::vector<Point> selectedPoints(k);
 
@@ -328,7 +326,7 @@ float computePurity(std::vector<Point> & dataPoints, std::vector<std::string> & 
 	return purity;
 }
 
-void kmeans(std::vector<Point> & dataPoints, int k)
+float kmeans(std::vector<Point> & dataPoints, int k)
 {
 	std::vector<int> currAssignments(dataPoints.size());
 	std::vector<Point> oldClusters(k);
@@ -347,14 +345,37 @@ void kmeans(std::vector<Point> & dataPoints, int k)
 	};
 	std::vector<std::string> labels = getLabels(dataPoints);
 	float purity = computePurity(dataPoints, labels, currAssignments, k);
+
+	return purity;
+}
+
+void evaluateIndividual(std::vector<Point> & dataPoints, Tree & individual, int k, float parsimonyCoefficient)
+{
+	for (int i = 0; i < dataPoints.size(); i++)
+	{
+		reduceFeatures(individual, dataPoints[i].row);
+	}
+	float fitness = kmeans(dataPoints, k);
+	fitness = fitness - (parsimonyCoefficient * calculateTreeDepth(individual));
+	individual.fitness = fitness;
 }
 
 void runEA(Settings settingsInfo)
 {
-	int remainingEvals = settingsInfo.numberEvaluations;
+	std::vector<Point> fileData;
+	// Get the dataset into memory
+	getPointsFromFile(fileData, settingsInfo.numFeatures, settingsInfo.trainingDataset);
+
+	int runEvals = 0;
 	std::vector<Tree> population(0);
 	initializePopulation(population, settingsInfo.populationSize, settingsInfo.numFeatures);
-	// remainingEvals -= settingsInfo.populationSize;
+	for (int i = 0; i < population.size(); i++)
+	{
+		std::vector<Point> copyOfFileData = fileData;
+		evaluateIndividual(copyOfFileData, population[i], settingsInfo.k, settingsInfo.parsimonyCoefficient);
+		runEvals++;
+		std::cout << runEvals << " out of " << settingsInfo.numberEvaluations << " completed!\n";
+	}
 }
 
 void initializePopulation(std::vector<Tree> & population, int populationSize, int numFeatures)

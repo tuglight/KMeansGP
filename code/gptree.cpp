@@ -221,7 +221,6 @@ Tree createFullTree(int treeDepth, int numFeatures)
 
     if (calculateNodeDepth(i + 1) < treeDepth)
     {
-      std::cout << i << "\n";
       randVal = rand() % functions.size();
       functionNode.operatorType = functions[randVal];
       newTree.nodes[i] = functionNode;
