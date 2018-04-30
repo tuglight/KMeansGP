@@ -1,0 +1,8 @@
+k 3
+number_of_features 13
+training_dataset ../data/winetraining.csv
+testing_set ../data/winetesting.csv
+population_size 100
+generation_size 50
+parsimony_coefficient 0.0
+number_of_evaluations 5000

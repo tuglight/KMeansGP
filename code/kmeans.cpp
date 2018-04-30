@@ -57,14 +57,16 @@ void addChildrenToPopulation(std::vector<Tree> & children, std::vector<Tree> & p
 int main()
 {
 	srand(time(NULL));
-	std::string testDataFile = "../data/iristraining.csv";
-	std::string settingsFile = "../results/isoletsettings.txt";
+	std::string testDataFile = "../data/winetraining.csv";
+	std::string settingsFile = "../results/winesettings.txt";
 	Settings eaSettings = getSettings(settingsFile);
 	runEA(eaSettings);
 	std::vector<Point> fileData;
-	int k = 3;
 	int numFeatures = 0;
-	// getPointsFromFile(fileData, numFeatures, testDataFile);
+	getPointsFromFile(fileData, numFeatures, testDataFile);
+	float baseRunPurity = kmeans(fileData, eaSettings.k);
+	std::cout << baseRunPurity << "\n";
+	int k = 3;
 
 	Tree myTree;
 	// createTree(myTree, 13);
@@ -382,6 +384,7 @@ void runEA(Settings settingsInfo)
 		std::sort(population.begin(), population.end(), compTrees);
 		population.resize(settingsInfo.populationSize);
 	} while(runEvals < settingsInfo.numberEvaluations);
+	std::cout << population[0].fitness << "\n";
 	std::cout << "EA finished!\n";
 }
 

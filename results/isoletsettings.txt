@@ -4,5 +4,5 @@ training_dataset ../data/isolettraining.csv
 testing_set ../data/isolettesting.csv
 population_size 100
 generation_size 50
-parsimony_coefficient 0.001
-number_of_evaluations 500
+parsimony_coefficient 0.0
+number_of_evaluations 5000
