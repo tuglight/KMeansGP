@@ -25,6 +25,7 @@ struct Point
 struct Settings
 {
 	int k;
+	int numFeatures;
 	std::string trainingDataset;
 	std::string testingDataset;
 	int populationSize;
@@ -42,17 +43,22 @@ int getBestPointAssignment(Point dataPoint, std::vector<Point> & clusters, int k
 std::vector<int> assignAllDataPoints(std::vector<Point> & dataPoints, std::vector<Point> & clusters, int k);
 std::vector<Point> recomputeCentroids(std::vector<int> currAssignments, std::vector<Point> & dataPoints, int numFeatures, int k);
 bool equalCentroids(std::vector<Point> & oldClusters, std::vector<Point> & newClusters, int numFeatures);
+std::vector<std::string> getLabels(std::vector<Point> & dataPoints);
+float computePurity(std::vector<Point> & dataPoints, std::vector<std::string> & labels, std::vector<int> & assignments, int k);
 void kmeans(std::vector<Point> & dataPoints, int k);
+void runEA(Settings settingsInfo);
+void initializePopulation(std::vector<Tree> & population, int populationSize, int numFeatures);
 
 int main()
 {
 	srand(time(NULL));
-	std::string testDataFile = "../data/isolettraining.csv";
+	std::string testDataFile = "../data/iristraining.csv";
 	std::string settingsFile = "../results/irissettings.txt";
+	Settings eaSettings = getSettings(settingsFile);
+	runEA(eaSettings);
 	std::vector<Point> fileData;
 	int k = 3;
 	int numFeatures = 0;
-	Settings eaSettings = getSettings(settingsFile);
 	getPointsFromFile(fileData, numFeatures, testDataFile);
 
 	Tree myTree;
@@ -99,6 +105,7 @@ Settings getSettings(std::string settingsFile)
 	settingsIfStream.open(settingsFile.c_str());
 
 	settingsInfo.k = std::stoi(getSettingsLine(settingsIfStream));
+	settingsInfo.numFeatures = std::stoi(getSettingsLine(settingsIfStream));
 	settingsInfo.trainingDataset = getSettingsLine(settingsIfStream);
 	settingsInfo.testingDataset = getSettingsLine(settingsIfStream);
 	settingsInfo.populationSize = std::stoi(getSettingsLine(settingsIfStream));
@@ -259,6 +266,68 @@ bool equalCentroids(std::vector<Point> & oldClusters, std::vector<Point> & newCl
 	return isAllEqualCentroids;
 }
 
+std::vector<std::string> getLabels(std::vector<Point> & dataPoints)
+{
+	std::vector<std::string> labels(0);
+	bool foundLabel;
+
+	for (int i = 0; i < dataPoints.size(); i++)
+	{
+		foundLabel = false;
+		if (labels.size() > 0)
+		{
+			for (int j = 0; j < labels.size(); j++)
+			{
+				if (dataPoints[i].label == labels[j])
+				{
+					foundLabel = true;
+					break;
+				}
+			}
+			if (foundLabel == false)
+				labels.push_back(dataPoints[i].label);
+		}
+		else
+			labels.push_back(dataPoints[i].label);
+	}
+
+	return labels;
+}
+
+float computePurity(std::vector<Point> & dataPoints, std::vector<std::string> & labels, std::vector<int> & assignments, int k)
+{
+	// Two-dimensional vector that keeps track of how many times a label is in a cluster
+	std::vector<std::vector<int> > assignmentCounts(k, std::vector<int>(labels.size(), 0));
+	float purity = 0.0;
+	int maxNumber;
+
+	for (int i = 0; i < assignments.size(); i++)
+	{
+		for (int j = 0; j < labels.size(); j++)
+		{
+			if (dataPoints[i].label == labels[j])
+			{
+				assignmentCounts[assignments[i]][j]++;
+				break;
+			}
+		}
+	}
+
+	for (int i = 0; i < assignmentCounts.size(); i++)
+	{
+		maxNumber = 0;
+		for (int j = 0; j < assignmentCounts[i].size(); j++)
+		{
+			if (assignmentCounts[i][j] > maxNumber)
+				maxNumber = assignmentCounts[i][j];
+		}
+		purity += maxNumber;
+	}
+	purity /= dataPoints.size();
+
+	return purity;
+}
+
 void kmeans(std::vector<Point> & dataPoints, int k)
 {
 	std::vector<int> currAssignments(dataPoints.size());
@@ -276,4 +345,28 @@ void kmeans(std::vector<Point> & dataPoints, int k)
 			break;
 		oldClusters = newClusters;
 	};
+	std::vector<std::string> labels = getLabels(dataPoints);
+	float purity = computePurity(dataPoints, labels, currAssignments, k);
+}
+
+void runEA(Settings settingsInfo)
+{
+	int remainingEvals = settingsInfo.numberEvaluations;
+	std::vector<Tree> population(0);
+	initializePopulation(population, settingsInfo.populationSize, settingsInfo.numFeatures);
+	// remainingEvals -= settingsInfo.populationSize;
+}
+
+void initializePopulation(std::vector<Tree> & population, int populationSize, int numFeatures)
+{
+	// Current implementation is ramped-half-and-ah
+	int halfPopulation = populationSize / 2;
+	int treeDepth = 3;
+	for (int i = 0; i < populationSize; i++)
+	{
+		if (i < halfPopulation)
+			population.push_back(createFullTree(3, numFeatures));
+		else
+			population.push_back(createGrowTree(3, numFeatures));
+	}
 }

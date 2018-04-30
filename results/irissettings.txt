@@ -1,4 +1,5 @@
 k 3
+number_of_features 4
 training_dataset ../data/iristraining.csv
 testing_set ../data/iristesting.csv
 population_size 100
