@@ -33,6 +33,57 @@ struct Settings
 	int numberEvaluations;
 };
 
+std::string getSettingsLine(std::ifstream & settingsIfStream);
+Settings getSettings(std::string settingsFile);
+void getPointsFromFile(std::vector<Point> & fileData, int & numFeatures, std::string file);
+std::vector<Point> createKRandomPoints(std::vector<Point> & dataPoints, int k);
+float calculateEuclideanDistance(Point clusterCentroid, Point dataPoint);
+int getBestPointAssignment(Point dataPoint, std::vector<Point> & clusters, int k);
+std::vector<int> assignAllDataPoints(std::vector<Point> & dataPoints, std::vector<Point> & clusters, int k);
+std::vector<Point> recomputeCentroids(std::vector<int> currAssignments, std::vector<Point> & dataPoints, int numFeatures, int k);
+bool equalCentroids(std::vector<Point> & oldClusters, std::vector<Point> & newClusters, int numFeatures);
+void kmeans(std::vector<Point> & dataPoints, int k);
+
+int main()
+{
+	srand(time(NULL));
+	std::string testDataFile = "../data/isolettraining.csv";
+	std::string settingsFile = "../results/irissettings.txt";
+	std::vector<Point> fileData;
+	int k = 3;
+	int numFeatures = 0;
+	Settings eaSettings = getSettings(settingsFile);
+	getPointsFromFile(fileData, numFeatures, testDataFile);
+
+	Tree myTree;
+	// createTree(myTree, 13);
+	createTree(myTree, "../results/test.txt");
+	int depth = calculateTreeDepth(myTree);
+	Tree newTree;
+	copyTree(newTree, myTree);
+	Tree babyTree = subtreeCrossover(newTree, myTree);
+	Tree fatBabyTree = createFullTree(3, numFeatures);
+	Tree fatBabyTree2 = createFullTree(3, numFeatures);
+	Tree fatBabyTree3 = subtreeCrossover(fatBabyTree, fatBabyTree2);
+	Tree unbalancedBaby = createGrowTree(3, numFeatures);
+	Tree unbalancedBaby2 = createGrowTree(3, numFeatures);
+	Tree unbalancedBaby3 = subtreeCrossover(unbalancedBaby, unbalancedBaby2);
+
+	// for (int i = 0; i < fileData.size(); i++)
+	// {
+	// 	reduceFeatures(fatBabyTree3, fileData[i].row);
+	// }
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	kmeans(fileData, k);
+	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+	std::cout << "It took me " << time_span.count() << " seconds.";
+
+
+
+	return 0;
+}
+
 std::string getSettingsLine(std::ifstream & settingsIfStream)
 {
 	std::string dummyString;
@@ -225,44 +276,4 @@ void kmeans(std::vector<Point> & dataPoints, int k)
 			break;
 		oldClusters = newClusters;
 	};
-}
-
-int main()
-{
-	srand(time(NULL));
-	std::string testDataFile = "../data/isolettraining.csv";
-	std::string settingsFile = "../results/irissettings.txt";
-	std::vector<Point> fileData;
-	int k = 3;
-	int numFeatures = 0;
-	Settings eaSettings = getSettings(settingsFile);
-	getPointsFromFile(fileData, numFeatures, testDataFile);
-
-	Tree myTree;
-	// createTree(myTree, 13);
-	createTree(myTree, "../results/test.txt");
-	int depth = calculateTreeDepth(myTree);
-	Tree newTree;
-	copyTree(newTree, myTree);
-	Tree babyTree = subtreeCrossover(newTree, myTree);
-	Tree fatBabyTree = createFullTree(3, numFeatures);
-	Tree fatBabyTree2 = createFullTree(3, numFeatures);
-	Tree fatBabyTree3 = subtreeCrossover(fatBabyTree, fatBabyTree2);
-	Tree unbalancedBaby = createGrowTree(3, numFeatures);
-	Tree unbalancedBaby2 = createGrowTree(3, numFeatures);
-	Tree unbalancedBaby3 = subtreeCrossover(unbalancedBaby, unbalancedBaby2);
-
-	// for (int i = 0; i < fileData.size(); i++)
-	// {
-	// 	reduceFeatures(fatBabyTree3, fileData[i].row);
-	// }
-	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-	kmeans(fileData, k);
-	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
-	std::cout << "It took me " << time_span.count() << " seconds.";
-
-
-
-	return 0;
 }
