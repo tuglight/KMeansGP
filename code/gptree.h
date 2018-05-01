@@ -1,4 +1,5 @@
 // Programmer: Josh Tuggle
+// Program: KMeansGP
 
 #include <vector>
 #include <iostream>
@@ -8,10 +9,10 @@
 
 struct Node
 {
-  int nodeType;
-  char operatorType;
-  int featureIndex;
-  float value;
+  int nodeType; // 0 - none, 1 - terminal, 2 - non-terminal
+  char operatorType; // Character of an operator if there is one, otherwise 'N'
+  int featureIndex; // Array index of a feature
+  float value; // Can contain a value if terminal needs it
 };
 
 struct Tree

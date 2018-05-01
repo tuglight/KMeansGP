@@ -1,5 +1,9 @@
+// Programmer: Josh Tuggle
+// Program: KMeansGP
+
 #include "gptree.h"
 
+// Creates a tree with a number of nodes that are of none type
 void createTree(Tree & initialTree, int numNodes)
 {
   initialTree.fitness = 0.0;
@@ -11,6 +15,7 @@ void createTree(Tree & initialTree, int numNodes)
   initialTree.nodes.resize(numNodes, tempNode);
 }
 
+// Creates a tree based on the file data
 void createTree(Tree & initialTree, std::string fileName)
 {
   std::ifstream dataFile;
@@ -18,10 +23,13 @@ void createTree(Tree & initialTree, std::string fileName)
 
   dataFile.open(fileName.c_str());
 
+  // First value in a file is the number tree nodes
   dataFile >> numNodes;
   initialTree.nodes.resize(numNodes);
+  // The second value is the fitness of the tree
   dataFile >> initialTree.fitness;
 
+  // Next all the node data is listed sequently
   for (int i = 0; i < numNodes; i++)
   {
     dataFile >> initialTree.nodes[i].nodeType;
@@ -31,6 +39,7 @@ void createTree(Tree & initialTree, std::string fileName)
   }
 }
 
+// Writes tree data to a specified file
 void writeTreeToFile(Tree & tree, std::string fileName)
 {
   std::ofstream dataFile;
@@ -38,10 +47,13 @@ void writeTreeToFile(Tree & tree, std::string fileName)
 
   dataFile.open(fileName.c_str());
 
+  // First value in a file is the number tree nodes
   dataFile << tree.nodes.size();
   dataFile << " ";
+  // The second value is the fitness of the tree
   dataFile << tree.fitness;
 
+  // Next all the node data is listed sequently
   for (int i = 0; i < tree.nodes.size(); i++)
   {
     dataFile << " ";
@@ -55,6 +67,7 @@ void writeTreeToFile(Tree & tree, std::string fileName)
   }
 }
 
+// Reduce a set of features into one based on the parse tree
 void reduceFeatures(Tree & parseTree, std::vector<float> & features)
 {
   float featureVal;
@@ -63,6 +76,7 @@ void reduceFeatures(Tree & parseTree, std::vector<float> & features)
   features[0] = featureVal;
 }
 
+// Caclulates the value returned by the parse tree given a set of features
 float calculateParseTree(int nodeIndex, Tree & parseTree, std::vector<float> & features)
 {
   float calculatedValue;
@@ -82,6 +96,7 @@ float calculateParseTree(int nodeIndex, Tree & parseTree, std::vector<float> & f
   return calculatedValue;
 }
 
+// Performs the function of each of the operators
 float binaryOperators(float lhs, float rhs, char operatorType)
 {
   float evalVal;
@@ -105,16 +120,19 @@ float binaryOperators(float lhs, float rhs, char operatorType)
   return evalVal;
 }
 
+// Calculates the depth of the tree
 int calculateTreeDepth(Tree & parseTree)
 {
   return (int)(std::ceil(log2(parseTree.nodes.size() + 1)) - 1);
 }
 
+// Calculates the depth a particular node in a tree
 int calculateNodeDepth(int nodeNumber)
 {
   return (int)(std::ceil(log2(nodeNumber + 1)) - 1);
 }
 
+// Cleans the tree of unnecessary none type nodes at the end of the tree array
 void cleanTree(Tree & parseTree)
 {
   int counter = parseTree.nodes.size();
@@ -130,6 +148,7 @@ void cleanTree(Tree & parseTree)
 
 }
 
+// Randomly selects a ndoe from the tree
 int chooseRandomNode(Tree & tree)
 {
   int numTreeNodes = tree.nodes.size();
@@ -144,6 +163,7 @@ int chooseRandomNode(Tree & tree)
   return randVal;
 }
 
+// Will copy a rhs tree into a lhs tree
 void copyTree(Tree & lhsTree, Tree & rhsTree)
 {
   lhsTree.nodes.resize(rhsTree.nodes.size());
@@ -152,6 +172,7 @@ void copyTree(Tree & lhsTree, Tree & rhsTree)
   lhsTree.fitness = rhsTree.fitness;
 }
 
+// Sets all the nodes in branch to none type
 void cleanBranch(int chosenNode, Tree & tree)
 {
   if (chosenNode < tree.nodes.size())
@@ -165,6 +186,7 @@ void cleanBranch(int chosenNode, Tree & tree)
   }
 }
 
+// Recursive utility function used for subtree crossover
 void recursiveSubtreeCrossover(int childNodeIndex, Tree & childTree, int parentNodeIndex, Tree & parentTree)
 {
   if (parentNodeIndex >= parentTree.nodes.size())
@@ -189,6 +211,7 @@ void recursiveSubtreeCrossover(int childNodeIndex, Tree & childTree, int parentN
   recursiveSubtreeCrossover((2 * childNodeIndex) + 2, childTree, (2 * parentNodeIndex) + 2, parentTree);
 }
 
+// Performs subtree crossover and returns a single tree
 Tree subtreeCrossover(Tree & tree1, Tree & tree2)
 {
   int randTreeNode1 = chooseRandomNode(tree1);
@@ -204,6 +227,7 @@ Tree subtreeCrossover(Tree & tree1, Tree & tree2)
   return newTree;
 }
 
+// Creates a tree of a specified depth that has all nodes being a terminal or non-terminal
 Tree createFullTree(int treeDepth, int numFeatures)
 {
   int numNodes = std::pow(2, treeDepth + 1) - 1;
@@ -270,6 +294,7 @@ Tree createFullTree(int treeDepth, int numFeatures)
   return newTree;
 }
 
+// Creates a tree that has random valid parse tree nodes and is with the specified depth
 Tree createGrowTree(int treeDepth, int numFeatures)
 {
   int numNodes = std::pow(2, treeDepth + 1) - 1;
@@ -361,6 +386,7 @@ Tree createGrowTree(int treeDepth, int numFeatures)
   return newTree;
 }
 
+// Utility function used grow method that markes nodes in branch as being essentially none types
 void markUnavailableNodes(int treeIndex, int numNodes, std::vector<bool> & availableNodes)
 {
   if (treeIndex >= numNodes)
