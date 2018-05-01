@@ -22,6 +22,7 @@ struct Tree
 
 void createTree(Tree & initialTree, int numNodes);
 void createTree(Tree & initialTree, std::string fileName);
+void writeTreeToFile(Tree & tree, std::string fileName);
 void reduceFeatures(Tree & parseTree, std::vector<float> & features);
 float calculateParseTree(int nodeIndex, Tree & parseTree, std::vector<float> & features);
 float binaryOperators(float lhs, float rhs, char operatorType);

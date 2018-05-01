@@ -2,7 +2,10 @@ k 3
 number_of_features 13
 training_dataset ../data/winetraining.csv
 testing_set ../data/winetesting.csv
+results_folder ../results/
+results_file_name wineresults
 population_size 100
 generation_size 50
 parsimony_coefficient 0.0
 number_of_evaluations 5000
+log_individual_every 100

@@ -2,7 +2,10 @@ k 26
 number_of_features 617
 training_dataset ../data/isolettraining.csv
 testing_set ../data/isolettesting.csv
+results_folder ../results/
+results_file_name isoletresults
 population_size 100
 generation_size 50
 parsimony_coefficient 0.0
 number_of_evaluations 5000
+log_individual_every 100

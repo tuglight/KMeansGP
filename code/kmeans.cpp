@@ -28,10 +28,13 @@ struct Settings
 	int numFeatures;
 	std::string trainingDataset;
 	std::string testingDataset;
+	std::string resultsFolder;
+	std::string resultsFileName;
 	int populationSize;
 	int generationSize;
 	float parsimonyCoefficient;
 	int numberEvaluations;
+	int logIndividualEvery;
 };
 
 std::string getSettingsLine(std::ifstream & settingsIfStream);
@@ -58,7 +61,7 @@ int main()
 {
 	srand(time(NULL));
 	std::string testDataFile = "../data/winetraining.csv";
-	std::string settingsFile = "../results/winesettings.txt";
+	std::string settingsFile = "../settings/winesettings.txt";
 	Settings eaSettings = getSettings(settingsFile);
 	runEA(eaSettings);
 	std::vector<Point> fileData;
@@ -70,24 +73,9 @@ int main()
 
 	Tree myTree;
 	// createTree(myTree, 13);
-	createTree(myTree, "../results/test.txt");
-	int depth = calculateTreeDepth(myTree);
-	Tree newTree;
-	copyTree(newTree, myTree);
-	Tree babyTree = subtreeCrossover(newTree, myTree);
-	Tree fatBabyTree = createFullTree(3, numFeatures);
-	Tree fatBabyTree2 = createFullTree(3, numFeatures);
-	Tree fatBabyTree3 = subtreeCrossover(fatBabyTree, fatBabyTree2);
-	Tree unbalancedBaby = createGrowTree(3, numFeatures);
-	Tree unbalancedBaby2 = createGrowTree(3, numFeatures);
-	Tree unbalancedBaby3 = subtreeCrossover(unbalancedBaby, unbalancedBaby2);
 
-	// for (int i = 0; i < fileData.size(); i++)
-	// {
-	// 	reduceFeatures(fatBabyTree3, fileData[i].row);
-	// }
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-	kmeans(fileData, k);
+	// kmeans(fileData, k);
 	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
 	std::cout << "It took me " << time_span.count() << " seconds.";
@@ -115,10 +103,13 @@ Settings getSettings(std::string settingsFile)
 	settingsInfo.numFeatures = std::stoi(getSettingsLine(settingsIfStream));
 	settingsInfo.trainingDataset = getSettingsLine(settingsIfStream);
 	settingsInfo.testingDataset = getSettingsLine(settingsIfStream);
+	settingsInfo.resultsFolder = getSettingsLine(settingsIfStream);
+	settingsInfo.resultsFileName = getSettingsLine(settingsIfStream);
 	settingsInfo.populationSize = std::stoi(getSettingsLine(settingsIfStream));
 	settingsInfo.generationSize = std::stoi(getSettingsLine(settingsIfStream));
 	settingsInfo.parsimonyCoefficient = std::stof(getSettingsLine(settingsIfStream));
 	settingsInfo.numberEvaluations = std::stoi(getSettingsLine(settingsIfStream));
+	settingsInfo.logIndividualEvery = std::stoi(getSettingsLine(settingsIfStream));
 
 	return settingsInfo;
 }
@@ -374,17 +365,34 @@ void runEA(Settings settingsInfo)
 	getPointsFromFile(fileData, settingsInfo.numFeatures, settingsInfo.trainingDataset);
 
 	int runEvals = 0;
+	int lastLog = 0;
 	std::vector<Tree> population(0);
 	initializePopulation(population, settingsInfo.populationSize, settingsInfo.numFeatures);
 	evaluateGroup(population, fileData, settingsInfo.k, settingsInfo.parsimonyCoefficient, runEvals, settingsInfo.numberEvaluations);
+	std::sort(population.begin(), population.end(), compTrees);
+	if (runEvals - lastLog >= settingsInfo.logIndividualEvery)
+	{
+		lastLog = runEvals;
+		std::string fileToSave = settingsInfo.resultsFolder + settingsInfo.resultsFileName + "evals-" + std::to_string(runEvals) + ".txt";
+		writeTreeToFile(population[0], fileToSave);
+	}
 	do {
 		std::vector<Tree> children = createChildren(population, settingsInfo.generationSize);
 		evaluateGroup(children, fileData, settingsInfo.k, settingsInfo.parsimonyCoefficient, runEvals, settingsInfo.numberEvaluations);
 		addChildrenToPopulation(children, population);
 		std::sort(population.begin(), population.end(), compTrees);
 		population.resize(settingsInfo.populationSize);
+		if (runEvals - lastLog >= settingsInfo.logIndividualEvery)
+		{
+			lastLog = runEvals;
+			std::string fileToSave = settingsInfo.resultsFolder + settingsInfo.resultsFileName + "evals-" + std::to_string(runEvals) + ".txt";
+			writeTreeToFile(population[0], fileToSave);
+		}
 	} while(runEvals < settingsInfo.numberEvaluations);
 	std::cout << population[0].fitness << "\n";
+	writeTreeToFile(population[0], "../results/bigtest.txt");
+	Tree testTree;
+	createTree(testTree, "../results/bigtest.txt");
 	std::cout << "EA finished!\n";
 }
 

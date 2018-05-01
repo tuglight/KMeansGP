@@ -31,6 +31,30 @@ void createTree(Tree & initialTree, std::string fileName)
   }
 }
 
+void writeTreeToFile(Tree & tree, std::string fileName)
+{
+  std::ofstream dataFile;
+  int numNodes;
+
+  dataFile.open(fileName.c_str());
+
+  dataFile << tree.nodes.size();
+  dataFile << " ";
+  dataFile << tree.fitness;
+
+  for (int i = 0; i < tree.nodes.size(); i++)
+  {
+    dataFile << " ";
+    dataFile << tree.nodes[i].nodeType;
+    dataFile << " ";
+    dataFile << tree.nodes[i].operatorType;
+    dataFile << " ";
+    dataFile << tree.nodes[i].featureIndex;
+    dataFile << " ";
+    dataFile << tree.nodes[i].value;
+  }
+}
+
 void reduceFeatures(Tree & parseTree, std::vector<float> & features)
 {
   float featureVal;
