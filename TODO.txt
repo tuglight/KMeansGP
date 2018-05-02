@@ -1,28 +1,32 @@
-*Implement k-means
-+ Create Node Struct
-+ Create Tree Class
-+ Implement Tree Constructor
-+ Implement Tree Destructor
-+ Implement Tree Copy Constructor
-+ Implement Way To Save Trees to txt
-+ Implement Way To Load Trees from txt
-+ Implement Removal of Tree Parts/Branches
-+ Implement Subtree Crossover
-+ Implement Mutation of Trees
-+ Create Way to Quickly Evaluate Trees
+* Implement k-means
+* Create Node Struct
+* Create Tree Class
+* Implement Tree Constructor
+* Implement Tree Destructor
+* Implement Tree Copy Constructor
+* Implement Way To Save Trees to txt
+* Implement Way To Load Trees from txt
+* Implement Removal of Tree Parts/Branches
+* Implement Subtree Crossover
+* Implement Mutation of Trees
+* Create Way to Quickly Evaluate Trees
 
-Implement Evolutionary Algorithm
-+ Implement Creation of Initial Population
-+ Create Settings Struct
-+ Implement Parent Selection
-+ Link Subtree Crossover with Tree Crossover
-+ Link mutation with Tree Mutation
-+ Implement Way to Determine Cluster Accuracy
-+ Implement Fitness
-+ Implement Logging Every x Evaluations
-+ Create Settings File
-+ Be Able to Load Settings File
+* Implement Evolutionary Algorithm
+* Implement Creation of Initial Population
+* Create Settings Struct
+* Implement Parent Selection
+* Link Subtree Crossover with Tree Crossover
+* Link mutation with Tree Mutation
+* Implement Way to Determine Cluster Accuracy
+* Implement Fitness
+* Implement Logging Every x Evaluations
+* Create Settings File
+* Be Able to Load Settings File
 
-Testing
-+ Create Initial Test Bed
-+ Time x Runs of k-means on Test Dataset vs x Runs of GP on Test Dataset
+* Testing
+* Create Initial Test Bed
+* Time x Runs of k-means on Test Dataset vs x Runs of GP on Test Dataset
+
+Paper
++ Report
++ Annotated Bibliography
