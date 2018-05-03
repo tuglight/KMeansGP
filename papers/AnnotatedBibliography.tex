@@ -1,0 +1,66 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{textcomp}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\linespread{2.0}
+\begin{document}
+
+\title{Appendix B - Annotated Bibliography\\
+\thanks{*Josh earned his Bachelor of Science in Computer Science in May 2016.  He is a former member of the Natural Computation Laboratory at the Missouri University of Science and Technology.  Josh hopes to graduate with a Master of Science in Computer Science in May 2018.}
+}
+
+\author{\IEEEauthorblockN{Joshua M. Tuggle*}
+\IEEEauthorblockA{May 3, 2018 \\
+CS 6405 - Clustering Algorithms}}
+
+\maketitle
+
+\onecolumn
+\tableofcontents
+\clearpage
+
+\section{Survey of Clustering Algorithms}
+In \cite{Xu2005},  the authors provide quite a wide array of information on clustering algorithms.  The thing I really used this source for was understanding the use of Euclidean distance.  The thing that I cited in my paper was the fact that Euclidean distance is used with k-means clustering.  Interestingly enough, I think it is fairly interesting that Euclidean distance is a special case of Minkowski distance.
+
+\section{Clustering}
+In \cite{XuRui2008}, the authors provide a textbook on the topic of Clustering.  Hence the name of the textbook.  This source was used to investigate some of the time complexities involved with k-means clustering.  I used this the information from this textbook to try and articulate the time complexity issue with the reader.
+
+\section{Introduction to Evolutionary Computing}
+In \cite{EibenAE2007}, the authors provide fair sized book on the topic of Evolutionary Computing.  I was taught in Dr. Tauritz's Evolutionary Computing course with this book.  It taught me a lot of what I know today about EA/GP.  My primary use for this project was to help me refresh my understanding of the fundamentals.  Chapter 6 was most helpful,  as it is an entire chapter on Genetic Programming.  
+
+\section{Improving Performance of SAT Solvers by Automated Design of Variable Selection Heuristics}
+In \cite{Illetskova2017},  the authors of this paper use GP to try and evolve heuristics for the minisat SAT solver.  I worked on this project NC-LAB on the MST campus.  After working on this paper/project, it was a significant help in working on this project.  
+
+\section{A Comparison of Programming Languages in Economics}
+In \cite{Aruboa2014}, the authors show the speed of C++ versus other languages.  I used this to show that C++ is a fast language.  One thing that was interesting is that the compiler choice for C++ is fairly important for speed.
+
+\section{Binaryheap: An implicit binary tree}
+In \cite{HodaNima}, the author shows a way to represent a binary tree using an array.  I tried this for ease of use of storing my trees in txt files and keeping track of children was fairly simple.  It was painful to implement subtree crossover with the array representation.  I'd say this method is easier to implement compared to trees with pointers.
+
+\section{Introduction of Information Retrieval}
+In \cite{Manning2008}, the authors briefly discuss the topic of purity.  The purity way for checking the accuracy of my clustering solutions made sense and it was fairly easy to implement into my framework.
+
+\section{UCI Machine Learning Repository}
+In \cite{Dua:2017}, authors of datasets upload them to the UCI Machine Learning Repository for the world to use for various applications.  I used this website to grab the Iris, Wine, and Isolet datasets.  It is an easy to navigate site.  I was sure to follow their citation policy and mentioned UCI in my acknowledgements.  
+
+\section{KMeansGP}
+In \cite{KMeansGP}, the author goes over his head trying to write something from scratch instead of using premade tools and libraries.  It was a fun experience writing the code for this project.  I did not get the experimental results I wanted, but that is ok.  
+
+\clearpage
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{kmeansgp-bibliography} 
+
+
+
+
+\end{document}

@@ -28,7 +28,7 @@ have not tested compilation on Linux, but the following should work for
 compiling the code from your terminal:
 g++ -O3 -std=c++11 -o kmeansgp *.cpp
 
-** // Purpose of this is to italics caused by the previous line.
+** // Purpose of this is to remove the italics caused by the previous line.
 
 Before you run the program, you will need a settings file.  The settings folder
 has some examples that should make it easy to make a new one.  The first row of
